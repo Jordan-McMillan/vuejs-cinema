@@ -1,17 +1,21 @@
 import Vue from 'vue';
 import './style.scss';
 
-import genres from './util/genres';
+import MovieList from './components/MovieList.vue';
+import MovieFilter from './components/MovieFilter.vue';
+
+import VueResource from 'vue-resource';
+Vue.use(VueResource);
 
 new Vue({
     el: '#app',
     data: {
         genre: [],
-        time: []
+        time: [],
+        movies: []
     },
     methods: {
         checkFilter(category, title, checked) {
-            console.log('root' + title);
             var collection = this[category];
             if(checked) {
                 collection.push(title);
@@ -26,85 +30,14 @@ new Vue({
         }
     },
     components: {
-        'movie-list': {
-            template: 
-            `<div id="movie-list">
-                <div v-for="movie in filteredMovies" class="movie">{{ movie.title }}</div>
-            </div>`,
-            data() {
-                return {
-                    movies: [
-                        {
-                            title: 'one',
-                            genre: genres.CRIME
-                        },
-                        {
-                            title: 'two',
-                            genre: genres.COMEDY
-                        },
-                        {
-                            title: 'threee',
-                            genre: genres.COMEDY
-                        }
-                    ]
-                };
-            },
-            props: ['genre', 'time'],
-            methods: {
-                moviePassesGenreFilter(movie) {
-                    if (!this.genre.length)
-                        return true;
-                    return this.genre.find(genre => movie.genre == genre);
-                }
-            },
-            computed: {
-                filteredMovies() {
-                    return this.movies.filter(this.moviePassesGenreFilter);
-                }
-            }
-        },
-        'movie-filter': {
-            data() {
-                return {
-                    genres
-                };
-            },
-            methods: {
-                checkFilter(category, title, checked) {
-                    this.$emit('check-filter', category, title, checked);
-                }
-            },
-            template: 
-            `<div id="movie-filter">
-                <h2>Filter results</h2>
-                <div class="filter-group">
-                    <check-filter v-for="genre in genres" v-bind:title="genre" v-on:check-filter="checkFilter"></check-filter>
-                </div>
-            </div>`,
-            components: {
-                'check-filter': {
-                    data() {
-                        return {
-                            checked: false
-                        };
-                    },
-                    props: [
-                        'title'
-                    ],
-                    methods: {
-                        checkFilter() {
-                            this.checked=!this.checked;
-                            this.$emit('check-filter', 'genre', this.title, this.checked);
-                        }
-                    },
-                    template: 
-                    `<div v-bind:class="{'check-filter': true, active: checked}" @click="checkFilter">
-                        <span class="checkbox"></span>
-                        <span class="check-filter-title">{{ title }}</span>
-                    </div>`
-
-                }
-            }
-        }
+        MovieList,
+        MovieFilter
+    },
+    created() {
+        var me = this;
+        this.$http.get('/api').then(response => {
+            var movies = response.data;
+            me.movies = movies;
+        });
     }
 });
