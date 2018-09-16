@@ -1,3 +1,4 @@
+process.traceDeprecation = true
 require('dotenv').config();
 
 const path = require('path');
