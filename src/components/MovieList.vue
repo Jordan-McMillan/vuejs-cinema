@@ -56,7 +56,7 @@ export default {
         },
         sessionPassesTimeFilter(session) {
             var sessionTime = this.$moment(session.time);
-
+            
             if(!this.day.isSame(sessionTime, 'day')) {
                 return false;
             } else if (this.time.length === 0 || this.time.length === 2) {

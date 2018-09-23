@@ -13,4 +13,8 @@ function checkFilter(category, title, checked) {
     console.log(collection);
 }
 
-export {checkFilter};
+function setDay(day) { 
+    this.day = day;
+};
+
+export {checkFilter, setDay};

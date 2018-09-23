@@ -5,6 +5,7 @@
         <div class="filter-group">
             <check-filter 
             v-for="time in times" 
+            v-bind:key="time"
             v-bind:title="time" 
             category='time'></check-filter>
         </div>
