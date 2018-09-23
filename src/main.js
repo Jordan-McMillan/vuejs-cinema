@@ -12,6 +12,10 @@ import moment from 'moment-timezone';
 moment.tz.setDefault('UTC');
 Object.defineProperty(Vue.prototype, '$moment', { get(){ return this.$root.moment } });
 
+//global event bus
+const bus = new Vue();
+Object.defineProperty(Vue.prototype, '$bus', { get() { return this.$root.bus } });
+import { checkFilter } from './util/bus.js';
 
 new Vue({
     el: '#app',
@@ -20,22 +24,8 @@ new Vue({
         time: [],
         movies: [],
         moment,
-        day: moment()
-    },
-    methods: {
-        checkFilter(category, title, checked) {
-            var collection = this[category];
-            if(checked) {
-                collection.push(title);
-            }
-            else {
-                let index = collection.indexOf(title);
-                if(index > -1) {
-                    collection.splice(index);
-                }
-            }
-            console.log(collection);
-        }
+        day: moment(),
+        bus
     },
     components: {
         MovieList,
@@ -47,5 +37,7 @@ new Vue({
             var movies = response.data;
             me.movies = movies;
         });
+
+        me.$bus.$on('check-filter', checkFilter.bind(me));
     }
 });
