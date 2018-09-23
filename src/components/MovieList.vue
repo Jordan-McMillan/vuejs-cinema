@@ -10,7 +10,8 @@
                 <div 
                 v-for="session in filteredSessions(movie.sessions)" 
                 v-bind:key="session.id" 
-                class="session-time-wrapper">
+                v-tooltip="{ seats: session.seats }"
+                class="session-time-wrapper tooltip-wrapper">
                     <div class="session-time">
                         {{ formatSessionTime(session.time) }}
                     </div>
@@ -56,7 +57,7 @@ export default {
         },
         sessionPassesTimeFilter(session) {
             var sessionTime = this.$moment(session.time);
-            
+
             if(!this.day.isSame(sessionTime, 'day')) {
                 return false;
             } else if (this.time.length === 0 || this.time.length === 2) {
