@@ -1,9 +1,6 @@
 import Vue from 'vue';
 import './style.scss';
 
-import MovieList from './components/MovieList.vue';
-import MovieFilter from './components/MovieFilter.vue';
-
 import VueResource from 'vue-resource';
 Vue.use(VueResource);
 
@@ -17,6 +14,13 @@ const bus = new Vue();
 Object.defineProperty(Vue.prototype, '$bus', { get() { return this.$root.bus } });
 import { checkFilter } from './util/bus.js';
 
+import routes from './util/routes';
+import VueRouter from 'vue-router';
+Vue.use(VueRouter);
+const router = new VueRouter({
+    routes
+});
+
 new Vue({
     el: '#app',
     data: {
@@ -27,10 +31,6 @@ new Vue({
         day: moment(),
         bus
     },
-    components: {
-        MovieList,
-        MovieFilter
-    },
     created() {
         var me = this;
         this.$http.get('/api').then(response => {
@@ -39,5 +39,6 @@ new Vue({
         });
 
         me.$bus.$on('check-filter', checkFilter.bind(me));
-    }
+    },
+    router
 });
